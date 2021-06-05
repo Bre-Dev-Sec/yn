@@ -11,6 +11,7 @@ import opn from 'opn'
 import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
+import { setAccessFileBookmark } from './ssb'
 
 // mas 下会报证书错误
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
@@ -195,6 +196,9 @@ const serve = () => {
 const showOpenDialog = (params: OpenDialogOptions) => {
   if (win) {
     const data = dialog.showOpenDialog(win, params)
+    data.then(({ filePaths, bookmarks }) => {
+      bookmarks && setAccessFileBookmark(filePaths, bookmarks)
+    })
     return data
   }
 }

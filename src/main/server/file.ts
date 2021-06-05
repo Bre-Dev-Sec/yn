@@ -7,6 +7,7 @@ import opn from 'opn'
 import * as wsl from '../wsl'
 import mark, { MarkedFile } from './mark'
 import repository from './repository'
+import { wrapAccessFileBookmark } from '../ssb'
 
 const readonly = !!(yargs.argv.readonly)
 const isWsl = wsl.isWsl
@@ -32,15 +33,17 @@ const withRepo = (repo = 'main', callback: (repoPath: string, ...targetPath: str
     throw new Error(`仓库 ${repo} 不存在`)
   }
 
-  return callback(repoPath, ...target.map(x => {
-    const targetPath = path.join(repoPath, x)
+  return wrapAccessFileBookmark(repoPath, () => {
+    return callback(repoPath, ...target.map(x => {
+      const targetPath = path.join(repoPath, x)
 
-    if (!targetPath.startsWith(repoPath)) {
-      throw new Error('路径错误')
-    }
+      if (!targetPath.startsWith(repoPath)) {
+        throw new Error('路径错误')
+      }
 
-    return targetPath
-  }))
+      return targetPath
+    }))
+  })
 }
 
 const read = (repo: string, p: string) => withRepo(repo, (_, targetPath) => fs.readFileSync(targetPath), p)
