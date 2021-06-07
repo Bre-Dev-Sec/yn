@@ -20,5 +20,5 @@ export const USER_PLUGIN_DIR = path.join(USER_DIR, './plugins')
 export const BIN_DIR = convertAppPath(path.join(__dirname, '../../bin'))
 export const RESOURCES_DIR = convertAppPath(path.join(__dirname, 'resources'))
 
-export const FLAG_DISABLE_SERVER = false
-export const FLAG_DISABLE_DEVTOOL = false
+export const FLAG_DISABLE_SERVER = true
+export const FLAG_DISABLE_DEVTOOL = true

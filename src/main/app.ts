@@ -12,6 +12,9 @@ import startup from './startup'
 import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 
+// mas 下会报证书错误
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
 
@@ -224,7 +227,7 @@ registerAction('show-open-dialog', showOpenDialog)
 
 powerMonitor.on('shutdown', quit)
 
-const gotTheLock = app.requestSingleInstanceLock()
+const gotTheLock = process.mas || app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.exit()
 } else {

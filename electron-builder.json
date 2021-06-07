@@ -41,16 +41,15 @@
     "gatekeeperAssess": false,
     "hardenedRuntime": true,
     "entitlements": "build/entitlements.mac.plist",
-    "entitlementsInherit": "build/entitlements.mac.plist",
+    "entitlementsInherit": "build/entitlementsInherit.mac.plist",
+    "provisioningProfile": "/Users/yang/cert/mas.provisionprofile",
     "binaries": [
-      "out/mac/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.7.3"
+      "out/mas-universal/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.7.3"
     ],
     "target": [
-      "dmg",
-      "zip"
+      "mas"
     ]
   },
-  "afterSign": "scripts/notarize.js",
   "nsis": {
     "perMachine": false
   }
