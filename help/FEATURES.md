@@ -163,47 +163,17 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 
 ## 运行代码
 
-支持运行 `JavaScript` `PHP` `nodejs` `Python` `bash` `bat` 代码。
+支持运行 `JavaScript` 代码。
 此功能执行外部命令实现，所以需要安装相应环境。
 
 代码块第一行需要包含以 `--run--` 字符串，示例如下
+
 ```js
 // --run--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORD')
 ```
-
-```node
-// --run--
-console.log('HELLOWORD')
-```
-
-```php
-// --run--
-echo 'HELLOWORD!';
-```
-
-```python
-# --run--
-print('HELLOWORD')
-```
-
-```shell
-# --run--
-date
-```
-
-```bat
-REM --run--
-@echo HELLOWORD
-```
-
-## 集成终端
-
-1. 使用 `Alt/Option + T` 或者点击状态栏 **切换终端** 菜单唤起集成终端
-1. 支持在编辑器中选中一段代码后按下 `Shift + Alt/Option + R` 直接在终端中运行命令。免去复制粘贴。
-1. 切换内置终端工作目录到当前目录 `右键目录`
 
 ## 小工具
 
