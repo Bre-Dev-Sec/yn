@@ -1,5 +1,6 @@
 import { app } from 'electron'
 import store from './storage'
+import { getAction } from './action'
 
 const STORAGE_BOOKMARK_KEY = 'macos_file_access_bookmark'
 
@@ -27,17 +28,46 @@ export const wrapAccessFileBookmark = (path: string, func: Function) => {
     }
   }
 
-  if (!bookmark) {
-    return func()
+  const xFunc = () => {
+    try {
+      return func()
+    } catch (error: any) {
+      if (error.message.includes('EPERM: operation not permitted, scandir')) {
+        getAction('show-main-window')()
+        getAction('show-open-dialog')({
+          properties: ['openDirectory'],
+          defaultPath: path,
+          message: '文件访问权限丢失，请授予储存目录权限（点击“打开”按钮）'
+        }).then(() => {
+          getAction('reload-main-window')()
+        })
+
+        throw new Error(`文件访问权限丢失 [${path}]`)
+      }
+
+      throw error
+    }
   }
 
-  const clean = app.startAccessingSecurityScopedResource(bookmark)
+  if (!bookmark) {
+    return xFunc()
+  }
+
   try {
-    const result = func()
-    clean()
-    return result
-  } catch (error) {
-    clean()
+    const clean = app.startAccessingSecurityScopedResource(bookmark)
+    try {
+      const result = xFunc()
+      clean()
+      return result
+    } catch (error) {
+      clean()
+      throw error
+    }
+  } catch (error: any) {
+    if (error.message.includes('bookmarkDataIsStale')) {
+      throw new Error(`书签过期，文件访问权限丢失 [${path}]`)
+    }
+
     throw error
   }
 }

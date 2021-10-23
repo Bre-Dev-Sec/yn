@@ -195,6 +195,7 @@ const serve = () => {
 
 const showOpenDialog = (params: OpenDialogOptions) => {
   if (win) {
+    params.securityScopedBookmarks = true
     const data = dialog.showOpenDialog(win, params)
     data.then(({ filePaths, bookmarks }) => {
       bookmarks && setAccessFileBookmark(filePaths, bookmarks)
