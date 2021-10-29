@@ -14,7 +14,7 @@ import { registerShortcut } from './shortcut'
 import { setAccessFileBookmark } from './ssb'
 
 // mas 下会报证书错误
-app.commandLine.appendSwitch('ignore-certificate-errors', 'true');
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
 
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
