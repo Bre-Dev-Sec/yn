@@ -30,16 +30,16 @@ interface TreeItem extends XFile {
 const withRepo = (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => any, ...target: string[]) => {
   const repoPath = repository.getPath(repo)
   if (!repoPath) {
-    throw new Error(`仓库 ${repo} 不存在`)
+    throw new Error(`repo ${repo} not exists.`)
   }
 
   return wrapAccessFileBookmark(repoPath, () => {
     return callback(repoPath, ...target.map(x => {
       const targetPath = path.join(repoPath, x)
 
-      if (!targetPath.startsWith(repoPath)) {
-        throw new Error('路径错误')
-      }
+    if (!targetPath.startsWith(repoPath)) {
+      throw new Error('Path error.')
+    }
 
       return targetPath
     }))
@@ -49,7 +49,7 @@ const withRepo = (repo = 'main', callback: (repoPath: string, ...targetPath: str
 const read = (repo: string, p: string) => withRepo(repo, (_, targetPath) => fs.readFileSync(targetPath), p)
 
 const write = (repo: string, p: string, content: any) => {
-  if (readonly) throw new Error('只读模式')
+  if (readonly) throw new Error('Readonly')
 
   return withRepo(repo, (_, filePath) => {
     fs.ensureFileSync(filePath)
@@ -60,7 +60,7 @@ const write = (repo: string, p: string, content: any) => {
 }
 
 const rm = (repo: string, p: string) => {
-  if (readonly) throw new Error('只读模式')
+  if (readonly) throw new Error('Readonly')
 
   withRepo(repo, (repoPath, targetPath) => {
     if (targetPath !== repoPath) {
@@ -71,7 +71,7 @@ const rm = (repo: string, p: string) => {
 }
 
 const mv = (repo: string, oldPath: string, newPath: string) => {
-  if (readonly) throw new Error('只读模式')
+  if (readonly) throw new Error('Readonly')
 
   withRepo(repo, (_, oldP, newP) => {
     if (oldPath !== newP) {
@@ -92,7 +92,7 @@ const checkHash = (repo: string, p: string, oldHash: string) => {
 }
 
 const upload = (repo: string, buffer: Buffer, path: string) => {
-  if (readonly) throw new Error('只读模式')
+  if (readonly) throw new Error('Readonly')
   write(repo, path, buffer)
 }
 
