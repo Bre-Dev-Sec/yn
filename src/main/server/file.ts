@@ -37,9 +37,9 @@ function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath:
     return callback(repoPath, ...target.map(x => {
       const targetPath = path.join(repoPath, x)
 
-    if (!targetPath.startsWith(repoPath)) {
-      throw new Error('Path error.')
-    }
+      if (!targetPath.startsWith(repoPath)) {
+        throw new Error('Path error.')
+      }
 
       return targetPath
     }))
