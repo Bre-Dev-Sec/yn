@@ -1,57 +1,64 @@
 # Yank Note
-> Yank Note 是一款**针对程序员**的 Markdown 编辑器，目标应用场景为在本机写文章、日志、笔记。
 
-> App Store 版本由于沙盒的限制，没有“浏览器中打开”、“终端”功能。如需要使用这两个功能，请访问 https://github.com/purocean/yn 下载完整功能版本。
+A **hackable** markdown note application for programmers
 
-![截图](./help/1.png)
+> The App Store version does not have "open in browser" and "terminal" functions due to sandbox restrictions. If you need to use these two functions, please visit https://github.com/purocean/yn to download the full functional version.
 
-## 特色
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
 
-- **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：可在文档中嵌入小工具、可运行的代码块、表格、Plantuml 图形、Drawio 图形、宏替换等。
-- **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
-- **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
-- **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
+English | [中文说明](./README_ZH-CN.md)
 
-## 使用技巧
+[toc]{level: [2]}
 
-+ 加密文件的加密解密操作均在前端完成，请**务必牢记自己的密码**。一旦密码丢失，就只能暴力破解了。
+![Screenshot](./help/1.png)
 
-## 特色功能
+## Highlights
 
-以下功能具体使用可参考[特色功能说明](./help/FEATURES.md)
+- **Easy to use**：Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
+- **Powerful**：Widgets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
+- **High compatibility**：Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
+- **Plug-in extension**：Support users to write their own plug-ins to expand the functionality of the editor.
+- **Encryption supported**：Use encryption to save private files such as account number, and the password can be set separately for each file.
 
-- 同步滚动：编辑区和预览区同步滚动，预览区可独立滚动
-- 目录大纲：预览区目录大纲快速跳转
-- 文件加密：以 `.c.md` 结尾的文件视为加密文件
-- 自动保存：文件编辑后自动保存，未保存文件橙色标题栏提醒（加密文档不自动保存）
-- 编辑优化：列表自动补全
-- 粘贴图片：可快速粘贴剪切板里面的图片，可作为文件或 Base64 形式插入
-- 嵌入附件：可以添加附件到文档，点击在系统中打开
-- 代码运行：支持运行 JavaScript 代码
-- 待办列表：支持显示文档中的待办进度，点击可快速切换待办状态
-- 快速打开：可使用快捷键打开文件切换面板，以便快捷打开文件，标记的文件，全文搜索文件内容
-- 公式解析：支持输入 katex 公式代码
-- 样式风格：Markdown 使用 GitHub 风格样式和特性
-- 数据仓库：可定义多个数据位置以便文档分类
-- 外链转换：将外链或 BASE64 图片转换为本地图片
-- HTML 解析：可以直接在文档里面使用 HTML 代码，也可以使用快捷键粘贴复制 HTML 为 Markdown
-- docx 导出：后端使用 pandoc 做转换器
-- TOC 支持：生成 TOC 在需要生成目录的地方写入 `[toc]{type: "ol", level: [1,2,3]}` 即可
-- 编辑表格单元格：双击表格单元格即可快速编辑
-- 复制标题链接：复制标题链接路径到剪切板，便于插入到其他文件
-- 嵌入小工具：文档支持内嵌 HTML 小工具
-- 嵌入 Plantuml 图形：需要安装 Java，graphviz
-- 嵌入 drawio 图形：文档支持内嵌 drawio 图形
-- 嵌入 ECharts 图形：在文档中嵌入 Echarts 图形
-- 嵌入 Mermaid 图形：在文档中嵌入 Mermaid 图形
-- 嵌入 Luckysheet 表格：在文档中嵌入 Luckysheet 表格
-- 嵌套列表转脑图展示：可将嵌套列表用脑图的方式展示
-- 元素属性书写：可自定义元素的任意属性
-- 表格解析增强：表格支持表格标题多行文本，列表等特性
-- 文档交叉链接跳转：支持在文档中链接其他文档，互相跳转
-- 脚注功能：支持在文档中书写脚注
-- 容器块：支持类似 VuePress 默认主题的自定义容器
-- 宏替换：支持内嵌 JavaScript 表达式动态替换文档内容
-- 图床：支持 [PicGo](https://picgo.github.io/PicGo-Doc/) 图床
-- 自定义插件：支持编写 JavaScript 插件拓展编辑器功能。插件放置在 `主目录/plugins` 中。参考[插件开发指南](./help/PLUGIN.md)
+## Attention
+
+- The encryption and decryption of encrypted files are both completed at the front end. Please **be sure to remember your password**. Once the password is lost, it can only be cracked violently.
+
+## Characteristic functions
+
+For more information on how to use the following functions, please see [characteristic functions description](./help/FEATURES.md)
+
+- **Sync scrolling:** the editing area and the preview area scroll synchronously, and the preview area can be scrolled independently
+- **Outline:** quickly jump to the corresponding location of the document through the directory outline in the preview area
+- **Encryption:** files ending with `.c.md` are treated as encrypted files
+- **Auto-save:** automatically save files after editing, with orange title bar reminder for unsaved files (encrypted documents are not automatically saved)
+- **Editing:** automatic completion of list
+- **Paste images:** you can quickly paste pictures from the clipboard and insert them as files or Base64
+- **Embed attachments:** you can add attachments to the document and click to open them in the operating system.
+- **Code running:** support to run JavaScript, PHP, nodejs, Python, bash code
+- **To-do list:** support to display the to-do progress in the document. Click to quickly switch the to-do status.
+- **Quickly Open:** you can use shortcut key to open the file switch panel to quickly open files, tagged files, and full-text search for file contents.
+- **Katex:** support katex expression
+- **Style:** Markdown uses GitHub styles and features
+- **Repository:** multiple data locations can be defined for document classification
+- **External link conversion:** convert external link or Base64 pictures into local pictures
+- HTML resolving：you can use HTML code directly in the document, or use shortcut keys to copy and paste HTML to Markdown
+- **Multiple formats export:** the backend uses pandoc as converter
+- **TOC:** write `[toc]{type:** "ol", level:** [1,2,3]}` to generate TOC where you need to generate a directory
+- **Edit table cell:** double-click a table cell to quickly edit
+- **Copy title link:** copy title link path to the clipboard for easy insertion into other files
+- **Embedded Widgets:** document supports embedded HTML widgets
+- **Embed Plantuml graphics:** you need to install Java and graphviz
+- **Embed drawio graphics:** document supports embedded drawio graphics
+- **Embed ECharts graphics:** document supports embeded Echarts graphics
+- **Embed Mermaid graphics:** document supports embeded Mermaid graphics
+- **Embed Luckysheet tables:** document supports embeded Luckysheet tables
+- **Mind map:** nested list can be displayed in the form of a mind map
+- **Element attribute writing:** any attribute of an element can be customized
+- **Table enhancement:** support table title with multiple lines of text, list and other features
+- **Document link:** support to link other documents in the document and jump to each other
+- **Footnote:** support writing footnotes in the document
+- **Custom container:** support custom containers similar to VuePress default themes
+- **Macro replacement:** support for embedded JavaScript expressions to dynamically replace document content
+- **Image hosting service:** support [PicGo](https://picgo.github.io/PicGo-Doc/) image hosting service
+- **Custom plug-ins:** support writing JavaScript plug-ins to expand editor functionality. The plug-in is placed in the `home directory/plugins`. Refer to [plug-in Development Guide](./help/PLUGIN.md)
