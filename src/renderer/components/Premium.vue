@@ -4,8 +4,6 @@
     <h2>{{$t('premium.premium')}}</h2>
     <div class="tabs">
       <div :class="{tab: true, selected: tab === 'intro'}" @click="switchTab('intro')">{{$t('premium.intro.intro')}}</div>
-      <div v-if="!purchased" :class="{tab: true, selected: tab === 'buy'}" @click="switchTab('buy')">{{$t('premium.buy.buy')}}</div>
-      <div v-if="!flagDemo" :class="{tab: true, selected: tab === 'activation'}" @click="switchTab('activation')">{{$t('premium.activation.license')}}</div>
     </div>
     <div v-show="tab === 'intro'" class="intro">
       <div v-if="!purchased" class="desc">{{$t('premium.intro.desc')}}</div>
@@ -91,8 +89,9 @@ import { debounce, random } from 'lodash-es'
 import { computed, defineComponent, onBeforeUnmount, ref } from 'vue'
 import { registerAction, removeAction } from '@fe/core/action'
 import { useI18n } from '@fe/services/i18n'
-import { getLicenseInfo, getPurchased, setLicense } from '@fe/others/premium'
+import { genLicense, getLicenseInfo, getPurchased, setLicense } from '@fe/others/premium'
 import { useToast } from '@fe/support/ui/toast'
+import * as api from '@fe/support/api'
 import { dayjs } from '@fe/context/lib'
 import { FLAG_DEMO } from '@fe/support/args'
 import XMask from './Mask.vue'
@@ -111,12 +110,18 @@ export default defineComponent({
     const license = ref('')
     const info = ref(getLicenseInfo())
 
+    function iap () {
+      license.value = genLicense()
+      activate()
+    }
+
     function switchTab (val: Tab) {
       tab.value = val
     }
 
     function buy () {
-      switchTab('buy')
+      useToast().show('info', 'Processing', 20000)
+      api.rpc('return require("./iap").purchase()').then(iap)
     }
 
     function showPurchase () {
@@ -125,6 +130,10 @@ export default defineComponent({
       license.value = ''
       purchased.value = getPurchased()
       info.value = getLicenseInfo()
+
+      if (!purchased.value) {
+        api.rpc('return require("./iap").restore()').then(iap)
+      }
     }
 
     function close () {
@@ -175,7 +184,7 @@ export default defineComponent({
       activate: debounce(activate, 1300, { leading: true, trailing: false }),
       license,
       purchased,
-      buy,
+      buy: debounce(buy, 1300, { leading: true, trailing: false }),
       info: computed(() => info.value
         ? { ...info.value, exp: dayjs(info.value?.expires).format('YYYY-MM-DD') }
         : null),

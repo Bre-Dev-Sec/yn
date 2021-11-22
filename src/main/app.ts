@@ -13,6 +13,7 @@ import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { setAccessFileBookmark } from './ssb'
+import './iap'
 
 // mas 下会报证书错误
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true')

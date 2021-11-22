@@ -5,6 +5,7 @@ import { decrypt } from '@fe/utils/crypto'
 import { getSetting, setSetting } from '@fe/services/setting'
 import { refresh } from '@fe/services/view'
 import { FLAG_DEMO } from '@fe/support/args'
+import ctx from '@fe/context'
 
 interface License {
   name: string,
@@ -91,4 +92,27 @@ export async function setLicense (licenseStr: string) {
 
   await setSetting('license', licenseStr)
   refresh()
+}
+
+export function genLicense () {
+  const exp = 3 * 24 * 60 * 60 * 1000
+  const name = 'iap-' + Date.now()
+  const email = `${name}@iap`
+
+  const expires = ctx.lib.dayjs('2099-01-01 00:00:00').valueOf()
+  const key = ctx.utils.md5('yank-note' + name + email)
+  const hash = ctx.utils.md5(key)
+  const data = {
+    name,
+    email,
+    hash,
+    expires,
+    activateExpires: Date.now() + exp,
+  }
+
+  const payload = 'yank-note-license' + JSON.stringify(data)
+  const encrypted = ctx.utils.crypto.encrypt(payload, key).content
+  return [...ctx.lib.cryptojs.enc.Hex.stringify(
+    ctx.lib.cryptojs.enc.Utf8.parse(key + encrypted)
+  )].reverse().join('')
 }
