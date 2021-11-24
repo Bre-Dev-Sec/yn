@@ -41,6 +41,8 @@ const data: BaseLanguage = {
       'premium-list': '基础编辑功能\n图形嵌入\n运行代码片段\nHTML 小工具\n文档加密\n内置终端\n宏替换\n暗色主题',
     },
     'buy': {
+      'ipa-buy': '购买 %s',
+      'ipa-restore': '恢复购买',
       'buy': '购买',
       'step-1': '1. 付款，请备注“%s”',
       'step-2': '2. 发送邮件给我，获取激活码',

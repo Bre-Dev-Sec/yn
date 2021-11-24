@@ -40,6 +40,8 @@ const data = {
       'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Widgets\nEncryption\nIntegrated Terminal\nMacro Replacement\nDark Mode',
     },
     'buy': {
+      'ipa-buy': 'Buy %s',
+      'ipa-restore': 'Restore Purchase',
       'buy': 'Buy',
       'step-1': '1. Pay and note "%s"',
       'step-2': '2. Send an email to me to get the license',

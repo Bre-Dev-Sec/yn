@@ -1,6 +1,6 @@
 <template>
   <XMask :show="showPanel" @close="close">
-  <div class="permium-wrapper" @click.stop>
+  <div class="permium-wrapper iap" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
     <div class="tabs">
       <div :class="{tab: true, selected: tab === 'intro'}" @click="switchTab('intro')">{{$t('premium.intro.intro')}}</div>
@@ -25,7 +25,10 @@
             <div class="plan-desc">{{$t('premium.intro.premium-desc')}}</div>
           </div>
           <button v-if="purchased" class="buy-btn" disabled>{{$t('premium.intro.current-plan')}}</button>
-          <button v-else class="primary buy-btn" @click="buy">{{$t('premium.buy.buy')}}</button>
+          <template v-else>
+            <button class="primary buy-btn iap-buy-btn" @click="buy">{{$t('premium.buy.ipa-buy', price)}}</button>
+            <button class="primary buy-btn iap-buy-btn" @click="restore">{{$t('premium.buy.ipa-restore', price)}}</button>
+          </template>
           <ul>
             <li v-for="item in $t('premium.intro.premium-list').split('\n')" :key="item">{{item}}</li>
           </ul>
@@ -109,6 +112,7 @@ export default defineComponent({
     const purchased = ref(getPurchased())
     const license = ref('')
     const info = ref(getLicenseInfo())
+    const price = ref('')
 
     function iap () {
       license.value = genLicense()
@@ -124,6 +128,13 @@ export default defineComponent({
       api.rpc('return require("./iap").purchase()').then(iap)
     }
 
+    function restore () {
+      useToast().show('info', 'Processing', 20000)
+      api.rpc('return require("./iap").restore()').then(iap).catch(() => {
+        useToast().show('warning', 'It seems that there is no purchase record under this account')
+      })
+    }
+
     function showPurchase () {
       showPanel.value = true
       tab.value = 'intro'
@@ -132,7 +143,11 @@ export default defineComponent({
       info.value = getLicenseInfo()
 
       if (!purchased.value) {
-        api.rpc('return require("./iap").restore()').then(iap)
+        api.rpc('return require("./iap").getProduct()').then(res => {
+          if (res && res[0]) {
+            price.value = `(${res[0].formattedPrice})`
+          }
+        })
       }
     }
 
@@ -176,6 +191,7 @@ export default defineComponent({
 
     return {
       flagDemo: FLAG_DEMO,
+      price,
       showPanel,
       tab,
       switchTab,
@@ -184,7 +200,8 @@ export default defineComponent({
       activate: debounce(activate, 1300, { leading: true, trailing: false }),
       license,
       purchased,
-      buy: debounce(buy, 1300, { leading: true, trailing: false }),
+      buy: debounce(buy, 8000, { leading: true, trailing: false }),
+      restore: debounce(restore, 8000, { leading: true, trailing: false }),
       info: computed(() => info.value
         ? { ...info.value, exp: dayjs(info.value?.expires).format('YYYY-MM-DD') }
         : null),
@@ -205,6 +222,10 @@ export default defineComponent({
   color: var(--g-color-5);
   box-shadow: rgba(0, 0, 0 , 0.3) 2px 2px 10px;
   border-radius: var(--g-border-radius);
+
+  &.iap {
+    width: 530px;
+  }
 
   h2 {
     margin-top: 10px;
@@ -261,8 +282,14 @@ export default defineComponent({
   }
 
   .buy-btn {
-      width: 80%;
-      margin: 16px 0;
+    width: 80%;
+    margin: 16px 0;
+  }
+
+  .iap-buy-btn {
+    width: fit-content;
+    margin-left: 10px;
+    font-size: 14px;
   }
 }
 

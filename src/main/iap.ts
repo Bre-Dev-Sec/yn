@@ -89,7 +89,7 @@ export function restore () {
     const timer = setTimeout(() => {
       callback = null
       reject(new Error('Timeout'))
-    }, 60000)
+    }, 8000)
 
     callback = () => {
       clearTimeout(timer)
@@ -99,4 +99,8 @@ export function restore () {
 
     inAppPurchase.restoreCompletedTransactions()
   })
+}
+
+export function getProduct () {
+  return inAppPurchase.getProducts([PRODUCT_ID])
 }
