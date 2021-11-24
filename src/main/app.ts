@@ -104,7 +104,7 @@ const createWindow = () => {
   })
 }
 
-const showWindow = () => {
+const showWindow = (showInCurrentWindow = true) => {
   if (win) {
     const show = () => {
       if (win) {
@@ -116,12 +116,19 @@ const showWindow = () => {
       }
     }
 
-    if (isMacos) {
-      show()
+    if (showInCurrentWindow) {
+      if (isMacos) {
+        // show in current workspace
+        win.setVisibleOnAllWorkspaces(true)
+        show()
+        win.setVisibleOnAllWorkspaces(false)
+      } else {
+        // hide first, then show in current desktop. for windows 10.
+        hideWindow()
+        setTimeout(show, 100)
+      }
     } else {
-      // hide first, then show in current desktop. for windows 10.
-      hideWindow()
-      setTimeout(show, 100)
+      show()
     }
   } else {
     createWindow()
@@ -270,7 +277,7 @@ if (!gotTheLock) {
   })
 
   app.on('activate', () => {
-    showWindow()
+    showWindow(false)
   })
 
   app.on('web-contents-created', (_, webContents) => {

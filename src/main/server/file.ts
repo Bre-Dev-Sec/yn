@@ -27,7 +27,7 @@ interface TreeItem extends XFile {
   children?: XFile[];
 }
 
-function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => T, ...target: string[]): T {
+function withRepo<T> (repo = 'main', callback: (repoPath: string, ...targetPath: string[]) => Promise<T>, ...target: string[]): Promise<T> {
   const repoPath = repository.getPath(repo)
   if (!repoPath) {
     throw new Error(`repo ${repo} not exists.`)
@@ -89,7 +89,7 @@ export async function mv (repo: string, oldPath: string, newPath: string) {
 }
 
 export function exists (repo: string, p: string) {
-  return withRepo(repo, (_, targetPath) => fs.existsSync(targetPath), p)
+  return withRepo(repo, async (_, targetPath) => fs.existsSync(targetPath), p)
 }
 
 export async function hash (repo: string, p: string) {
@@ -183,7 +183,7 @@ export async function tree (repo: string): Promise<TreeItem[]> {
 }
 
 export function open (repo: string, p: string) {
-  withRepo(repo, (_, targetPath) => {
+  withRepo(repo, async (_, targetPath) => {
     if (isWsl) {
       targetPath = wsl.toWinPath(targetPath)
     }
