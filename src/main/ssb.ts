@@ -15,7 +15,7 @@ export const setAccessFileBookmark = (paths: string[], bookmarks: string[]) => {
   store.set(STORAGE_BOOKMARK_KEY, data)
 }
 
-export const wrapAccessFileBookmark = (path: string, func: Function) => {
+export async function wrapAccessFileBookmark (path: string, func: Function) {
   if (!process.mas) {
     return func()
   }
@@ -28,9 +28,9 @@ export const wrapAccessFileBookmark = (path: string, func: Function) => {
     }
   }
 
-  const xFunc = () => {
+  const xFunc = async () => {
     try {
-      return func()
+      return await func()
     } catch (error: any) {
       if (error.message.includes('EPERM: operation not permitted, scandir')) {
         getAction('show-main-window')()
@@ -50,13 +50,13 @@ export const wrapAccessFileBookmark = (path: string, func: Function) => {
   }
 
   if (!bookmark) {
-    return xFunc()
+    return await xFunc()
   }
 
   try {
     const clean = app.startAccessingSecurityScopedResource(bookmark)
     try {
-      const result = xFunc()
+      const result = await xFunc()
       clean()
       return result
     } catch (error) {
