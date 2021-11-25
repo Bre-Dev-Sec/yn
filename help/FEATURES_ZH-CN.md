@@ -177,31 +177,6 @@ ctx.ui.useToast().show("info", "HELLOWORLD!")
 console.log('HELLOWORD')
 ```
 
-```node
-// --run--
-console.log('HELLOWORD')
-```
-
-```php
-// --run--
-echo 'HELLOWORD!';
-```
-
-```python
-# --run--
-print('HELLOWORD')
-```
-
-```shell
-# --run--
-date
-```
-
-```bat
-REM --run--
-@echo HELLOWORD
-```
-
 ## 小工具
 
 支持在文档中嵌入 HTML 小工具。
