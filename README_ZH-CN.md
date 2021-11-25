@@ -10,7 +10,7 @@
 
 [toc]{level: [2]}
 
-![截图](./help/1.png)
+![截图](./help/1_ZH-CN.png)
 
 ## 特色
 
