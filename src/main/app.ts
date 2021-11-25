@@ -29,6 +29,7 @@ const devFrontendPort = 8066
 
 Menu.setApplicationMenu(getMainMenus())
 
+let fullscreen = false
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
 
@@ -102,6 +103,14 @@ const createWindow = () => {
   win.on('closed', () => {
     win = null
   })
+
+  win.on('enter-full-screen', () => {
+    fullscreen = true
+  })
+
+  win.on('leave-full-screen', () => {
+    fullscreen = false
+  })
 }
 
 const showWindow = (showInCurrentWindow = true) => {
@@ -116,7 +125,7 @@ const showWindow = (showInCurrentWindow = true) => {
       }
     }
 
-    if (showInCurrentWindow) {
+    if (showInCurrentWindow && !fullscreen) {
       if (isMacos) {
         // show in current workspace
         win.setVisibleOnAllWorkspaces(true)
@@ -184,6 +193,10 @@ const showSetting = () => {
   win.webContents.executeJavaScript('window.ctx.setting.showSettingPanel();', true)
 }
 
+const toggleFullscreen = () => {
+  win && win.setFullScreen(!fullscreen)
+}
+
 const serve = () => {
   try {
     const handler = server(backendPort)
@@ -236,6 +249,7 @@ function refreshMenus () {
 
 registerAction('show-main-window', showWindow)
 registerAction('hide-main-window', hideWindow)
+registerAction('toggle-fullscreen', toggleFullscreen)
 registerAction('show-main-window-setting', showSetting)
 registerAction('reload-main-window', reload)
 registerAction('get-main-widow', () => win)
