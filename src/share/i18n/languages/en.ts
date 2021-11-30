@@ -210,12 +210,13 @@ const data = {
     },
     'insert': {
       'insert': 'Insert',
+      'paste-rft': 'Paste RTF',
+      'paste-img-base64': 'Paste Image',
     },
     'tool': {
       'tool': 'Tool',
-      'paste-rft': 'Paste RTF',
-      'paste-img-base64': 'Paste Image',
       'convert-img-link': 'Download Remote Image',
+      'macro-copy-markdown': 'Copy Markdown after Macro Replacement'
     },
     'document-info': {
       'selected': 'Selected',
@@ -377,6 +378,9 @@ const data = {
     'saved-at': 'Saved at',
     'edit-sheet': 'Edit Sheet',
     'create-dialog-title': 'Create Luckysheet File',
+  },
+  'markdown-link': {
+    'convert-to-titled-link': 'Convert to Titled Link',
   },
 }
 

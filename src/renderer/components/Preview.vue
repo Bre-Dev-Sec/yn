@@ -33,7 +33,7 @@
       </div>
     </div>
     <div :class="{'scroll-to-top': true, 'hide': scrollTop < 30}" :style="scrollToTopStyle" @click="scrollToTop">TOP</div>
-    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick">
+    <article ref="refView" class="markdown-body" @dblclick.capture="handleDbClick" @click.capture="handleClick" @contextmenu.capture="handleContextMenu">
       <Render @render="handleRender" @rendered="handleRendered" :content="renderContent" />
     </article>
   </div>
@@ -50,9 +50,12 @@ import { registerHook, removeHook, triggerHook } from '@fe/core/hook'
 import { registerAction, removeAction } from '@fe/core/action'
 import { revealLineInCenter } from '@fe/services/editor'
 import { showExport } from '@fe/services/document'
-import { toggleAutoPreview } from '@fe/services/view'
+import { getContextMenuItems, toggleAutoPreview } from '@fe/services/view'
+import { useContextMenu } from '@fe/support/ui/context-menu'
 import { useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
+import type { RenderEnv } from '@fe/types'
+
 import Render from './Render.vue'
 import SvgIcon from './SvgIcon.vue'
 
@@ -97,6 +100,8 @@ export default defineComponent({
       bottom: `max(100vh - ${height.value - (isElectron ? 0 : 20)}px, 40px)`
     }))
 
+    let renderEnv: RenderEnv | null = null
+
     function togglePinOutline () {
       pinOutline.value = !pinOutline.value
     }
@@ -139,7 +144,7 @@ export default defineComponent({
     function handleRendered () {
       updateOutline()
       updateTodoCount()
-      triggerHook('VIEW_RENDERED', { getViewDom })
+      triggerHook('VIEW_RENDERED', { getViewDom, renderEnv })
     }
 
     let updateRender = debounce(render, 100)
@@ -152,7 +157,8 @@ export default defineComponent({
         : '```' + extname(fileName.value || '').replace(/^\./, '') + '\n' + currentContent.value + '\n```'
 
       const startTime = performance.now()
-      renderContent.value = markdown.render(content, { source: content, file: currentFile.value })
+      renderEnv = { source: content, file: currentFile.value }
+      renderContent.value = markdown.render(content, renderEnv)
       const renderTime = performance.now() - startTime
 
       logger.debug('rendered', 'cost', renderTime)
@@ -188,8 +194,19 @@ export default defineComponent({
       triggerHook('VIEW_ELEMENT_DBCLICK', { e, view: getViewDom()! }, { breakable: true })
     }
 
-    async function handleClick (e: MouseEvent) {
+    function handleClick (e: MouseEvent) {
       triggerHook('VIEW_ELEMENT_CLICK', { e, view: getViewDom()! }, { breakable: true })
+    }
+
+    function handleContextMenu (e: MouseEvent) {
+      if (isElectron || e.altKey) {
+        const contextMenuItems = getContextMenuItems(e)
+        if (contextMenuItems.length > 0) {
+          useContextMenu().show(contextMenuItems)
+          e.stopPropagation()
+          e.preventDefault()
+        }
+      }
     }
 
     function revealLine (line: number) {
@@ -279,6 +296,7 @@ export default defineComponent({
       scrollToTop,
       handleClick,
       handleDbClick,
+      handleContextMenu,
       syncScroll,
     }
   },
