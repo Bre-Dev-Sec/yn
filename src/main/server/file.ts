@@ -57,7 +57,7 @@ export function write (repo: string, p: string, content: any): Promise<string> {
 
   return withRepo(repo, async (_, filePath) => {
     // create dir.
-    if (filePath.endsWith('/')) {
+    if (filePath.endsWith(path.sep)) {
       await fs.ensureDir(filePath)
       return ''
     }
