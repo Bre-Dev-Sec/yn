@@ -1,10 +1,8 @@
 <template>
-  <XMask :show="showPanel" @close="close">
+<XMask :show="showPanel" @close="close">
   <div class="permium-wrapper iap" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
-    <div class="tabs">
-      <div :class="{tab: true, selected: tab === 'intro'}" @click="switchTab('intro')">{{$t('premium.intro.intro')}}</div>
-    </div>
+    <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="tab === 'intro'" class="intro">
       <div v-if="!purchased" class="desc">{{$t('premium.intro.desc')}}</div>
       <div class="plan-wrapper">
@@ -87,7 +85,7 @@
       <button v-if="tab === 'activation' && license.trim()" class="btn" @click="activate">{{$t('ok')}}</button>
     </div>
   </div>
-  </XMask>
+</XMask>
 </template>
 
 <script lang="ts">
@@ -99,14 +97,14 @@ import { genLicense, getLicenseInfo, getPurchased, setLicense } from '@fe/others
 import { useToast } from '@fe/support/ui/toast'
 import * as api from '@fe/support/api'
 import { dayjs } from '@fe/context/lib'
-import { FLAG_DEMO } from '@fe/support/args'
 import { useModal } from '@fe/support/ui/modal'
 import XMask from './Mask.vue'
 import SvgIcon from './SvgIcon.vue'
+import GroupTabs from './GroupTabs.vue'
 
 export default defineComponent({
   name: 'premium',
-  components: { XMask, SvgIcon },
+  components: { XMask, SvgIcon, GroupTabs },
   setup () {
     const { t } = useI18n()
     const showPanel = ref(false)
@@ -200,6 +198,14 @@ export default defineComponent({
       })
     }
 
+    const tabs = computed(() => {
+      const data: { label: string, value: Tab }[] = [
+        { value: 'intro', label: t('premium.intro.intro') },
+      ]
+
+      return data
+    })
+
     registerAction({ name: 'premium.show', handler: showPurchase })
 
     onBeforeUnmount(() => {
@@ -207,11 +213,11 @@ export default defineComponent({
     })
 
     return {
-      flagDemo: FLAG_DEMO,
       price,
       showEmailDialog,
       showPanel,
       tab,
+      tabs,
       switchTab,
       paypal,
       sendEmail,
@@ -373,33 +379,6 @@ export default defineComponent({
         margin-left: 220px;
         display: block;
       }
-    }
-  }
-}
-
-.tabs {
-  display: flex;
-  background: var(--g-color-80);
-  border-radius: var(--g-border-radius);
-  border: 1px solid var(--g-color-70);
-  margin-bottom: 16px;
-
-  .tab {
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 2;
-    padding: 0 1em;
-    color: var(--g-color-20);
-    border-radius: var(--g-border-radius);
-
-    &:hover {
-      background: var(--g-color-85);
-    }
-
-    &.selected {
-      color: var(--g-color-0);
-      font-weight: 500;
-      background: var(--g-color-65);
     }
   }
 }
