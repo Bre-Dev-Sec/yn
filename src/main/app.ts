@@ -1,8 +1,9 @@
-import { protocol, app, BrowserWindow, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, shell } from 'electron'
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { protocol, app, Menu, Tray, powerMonitor, dialog, OpenDialogOptions, shell, BrowserWindow } from 'electron'
+import type TBrowserWindow from 'electron'
 import * as path from 'path'
 import * as os from 'os'
 import * as yargs from 'yargs'
-import ElectronContextmenu from 'electron-context-menu'
 import server from './server'
 import { APP_NAME } from './constant'
 import { getTrayMenus, getMainMenus } from './menus'
@@ -18,6 +19,9 @@ import './iap'
 // mas 下会报证书错误
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
 
+const electronContextMenu = require('electron-context-menu')
+const electronRemote = require('@electron/remote/main')
+
 const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
 
@@ -27,7 +31,8 @@ const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
 const devFrontendPort = 8066
 
-ElectronContextmenu({
+electronRemote.initialize()
+electronContextMenu({
   showLookUpSelection: true,
   showSearchWithGoogle: false,
   showCopyImage: true,
@@ -41,7 +46,7 @@ ElectronContextmenu({
 Menu.setApplicationMenu(getMainMenus())
 
 let fullscreen = false
-let win: BrowserWindow | null = null
+let win: TBrowserWindow.BrowserWindow | null = null
 let tray: Tray | null = null
 
 const getUrl = (mode?: typeof urlMode) => {
@@ -89,20 +94,17 @@ const createWindow = () => {
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
-      enableRemoteModule: true,
+      contextIsolation: false,
     },
     // for linux icon.
     ...(isLinux ? { icon: path.join(__dirname, './assets/icon.png') } : undefined)
   })
 
-  // win.maximize()
-  win.show()
   win.setMenu(null)
-
-  // could not load js correctly when startup
-  setTimeout(() => {
-    win && win.loadURL(getUrl())
-  }, 0)
+  win && win.loadURL(getUrl())
+  win.on('ready-to-show', () => {
+    win!.show()
+  })
 
   win.on('close', e => {
     if (trayEnabled) {
@@ -284,6 +286,11 @@ if (!gotTheLock) {
     showWindow()
   })
 
+  app.on('open-file', (e) => {
+    win && dialog.showMessageBox(win, { message: 'Yank Note dose not support opening files directly.' })
+    e.preventDefault()
+  })
+
   app.on('ready', () => {
     startup()
     serve()
@@ -303,11 +310,15 @@ if (!gotTheLock) {
   })
 
   app.on('activate', () => {
-    showWindow(false)
+    if (!win) {
+      showWindow(false)
+    }
   })
 
   app.on('web-contents-created', (_, webContents) => {
-    webContents.on('new-window', (e, url) => {
+    electronRemote.enable(webContents)
+
+    webContents.setWindowOpenHandler(({ url }) => {
       const allowList = [
         `${APP_NAME}://`,
         `http://localhost:${backendPort}`,
@@ -317,9 +328,11 @@ if (!gotTheLock) {
       ]
 
       if (!allowList.find(x => url.startsWith(x))) {
-        e.preventDefault()
         shell.openExternal(url)
+        return { action: 'deny' }
       }
+
+      return { action: 'allow' }
     })
   })
 }

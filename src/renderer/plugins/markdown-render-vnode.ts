@@ -272,5 +272,9 @@ export default {
       md.renderer.renderAttrs = renderAttrs
       md.renderer.renderToken = renderToken
     })
+
+    ctx.registerHook('VIEW_ON_GET_HTML_FILTER_NODE', ({ node }) => {
+      node.classList.remove('source-line')
+    })
   }
 } as Plugin
