@@ -2,7 +2,7 @@ import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { debounce } from 'lodash-es'
 import Renderer from 'markdown-it/lib/renderer'
 import { Plugin } from '@fe/context'
-import { dataURItoBlobLink, getLogger, strToBase64 } from '@fe/utils'
+import { downloadDataURL, getLogger, strToBase64 } from '@fe/utils'
 import { openWindow } from '@fe/support/env'
 import * as storage from '@fe/utils/storage'
 import { buildSrc } from '@fe/support/embed'
@@ -276,25 +276,17 @@ const init = (ele: HTMLElement) => {
   }
 
   const exportData = async (type: 'png' | 'svg' | 'km') => {
-    const download = (url: string, name: string) => {
-      const link = document.createElement('a')
-      link.href = dataURItoBlobLink(url)
-      link.target = '_blank'
-      link.download = name
-      link.click()
-    }
-
     const filename = `mindmap-${Date.now()}.${type}`
 
     switch (type) {
       case 'svg':
-        download('data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')), filename)
+        downloadDataURL(filename, 'data:image/svg+xml;base64,' + strToBase64(await km.exportData('svg')))
         break
       case 'km':
-        download('data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')), filename)
+        downloadDataURL(filename, 'data:application/octet-stream;base64,' + strToBase64(await km.exportData('json')))
         break
       case 'png':
-        download(await km.exportData('png'), filename)
+        downloadDataURL(filename, await km.exportData('png'))
         break
       default:
         break
@@ -390,7 +382,18 @@ const MindMap = defineComponent({
       removeHook('I18N_CHANGE_LANGUAGE', onLanguageChange)
     })
 
-    return () => h('div', { ...props.attrs, ref: container, class: 'mind-map reduce-brightness' })
+    let focused = false
+
+    return () => h('div', {
+      ref: container,
+      class: 'mind-map reduce-brightness',
+      tabIndex: -1,
+      onClickCapture: () => { container.value?.focus() },
+      onFocus: () => { focused = true },
+      onBlur: () => { focused = false },
+      onMousewheelCapture: (e: WheelEvent) => { !focused && e.stopPropagation() },
+      ...props.attrs,
+    })
   }
 })
 

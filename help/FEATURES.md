@@ -337,7 +337,7 @@ chart.setOption({
             }
         }
     ]
-})
+}, true)
 }
 ```
 
