@@ -1,10 +1,14 @@
 import { dialog, app, shell } from 'electron'
-import { autoUpdater, CancellationToken } from 'electron-updater'
+import { autoUpdater, CancellationToken, Provider } from 'electron-updater'
 import logger from 'electron-log'
 import ProgressBar from 'electron-progressbar'
 import store from './storage'
 import { GITHUB_URL } from './constant'
 import { $t } from './i18n'
+import { registerAction } from './action'
+import config from './config'
+
+type Source = 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com'
 
 logger.transports.file.level = 'info'
 autoUpdater.logger = logger
@@ -13,6 +17,48 @@ let progressBar: any = null
 
 const isAppx = app.getAppPath().indexOf('\\WindowsApps\\') > -1
 const disabled = isAppx || process.mas
+
+const httpRequest = (Provider.prototype as any).httpRequest
+;(Provider.prototype as any).httpRequest = function (url: URL, headers: Record<string, string>, ...args: any[]) {
+  const source: Source = config.get('updater.source', 'github.com')
+
+  if (source !== 'github.com') {
+    headers['user-agent'] = 'curl/7.77.0'
+    console.log('updater httpRequest', url.href)
+
+    if (url.pathname.endsWith('.atom')) {
+      url.host = 'hub.fastgit.org'
+      headers.accept = '*/*'
+      headers['user-agent'] = 'curl/7.77.0'
+      url.pathname = url.pathname.replace('/https://github.com', '')
+    }
+  }
+
+  return httpRequest.call(this, url, headers, ...args)
+}
+
+const setFeedURL = autoUpdater.setFeedURL
+autoUpdater.setFeedURL = async function (options: any) {
+  setFeedURL.call(this, options)
+  const source: Source = config.get('updater.source', 'github.com')
+  const provider = await (this as any).clientPromise
+  Object.defineProperty(provider, 'baseUrl', {
+    get () {
+      return new URL(`https://${source}/`)
+    }
+  })
+  Object.defineProperty(provider, 'basePath', {
+    get () {
+      const basePath = `/${this.options.owner}/${this.options.repo}/releases`
+
+      if (source.includes('ghproxy')) {
+        return `/https://github.com${basePath}`
+      }
+
+      return basePath
+    },
+  })
+}
 
 const init = (call: () => void) => {
   if (disabled) {
@@ -140,6 +186,10 @@ export function autoCheckForUpdates () {
   }
 }
 
+export function changeSource () {
+  autoUpdater.checkForUpdates()
+}
+
 app.whenReady().then(() => {
   init(() => {
     setTimeout(() => {
@@ -151,3 +201,5 @@ app.whenReady().then(() => {
     autoCheckForUpdates()
   }, 1000)
 })
+
+registerAction('updater.change-source', changeSource)
