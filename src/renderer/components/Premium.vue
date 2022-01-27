@@ -1,6 +1,6 @@
 <template>
-<XMask :show="showPanel" @close="close">
-  <div class="permium-wrapper iap" @click.stop>
+<XMask :show="showPanel" @close="close" style="padding-top: 4em">
+  <div class="premium-wrapper iap" @click.stop>
     <h2>{{$t('premium.premium')}}</h2>
     <group-tabs :tabs="tabs" v-model="tab" />
     <div v-show="tab === 'intro'" class="intro">
@@ -237,8 +237,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.permium-wrapper {
-  width: 420px;
+.premium-wrapper {
+  width: 472px;
   background: var(--g-color-95);
   margin: auto;
   padding: 20px;
