@@ -13,6 +13,7 @@ import { registerAction } from './action'
 import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
+import config from './config'
 import { setAccessFileBookmark } from './ssb'
 import './iap'
 
@@ -107,7 +108,7 @@ const createWindow = () => {
   })
 
   win.on('close', e => {
-    if (trayEnabled) {
+    if (trayEnabled && config.get('keep-running-after-closing-window', !process.mas)) {
       hideWindow()
       e.preventDefault()
     }
