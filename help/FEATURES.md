@@ -438,6 +438,14 @@ variable name | type | description
 `mdOptions.linkify` | `boolean` | Autoconvert URL-like text to links
 `mdOptions.typographer` | `boolean` | Enable some language-neutral replacement + quotes beautification
 
+## Macro Replacement
+
+> <a href="javascript: ctx.showPremium()">available in premium version</a>
+
+Yank Note allows you to embed macros in the page to dynamically replace the document.
+
+Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`
+
 ### Definition
 
 The `define` field can define some text replacement mappings. Supports definition in another file, supports macro expressions. For details, please refer to the Front Matter at the top of this document.
@@ -446,15 +454,9 @@ The `define` field can define some text replacement mappings. Supports definitio
 - App Version: --APP_VERSION--
 - From Another File: --TEST_DEFINE--
 
-## Macro Replacement
+### Macro Expression
 
-> <a href="javascript: ctx.showPremium()">available in premium version</a>
-
-Yank Note allows you to embed macros in the page to dynamically replace the document.
-
-### Use It
-
-Before using, you need to enable macro replacement in Front Matter and define `enableMacro: true`
+Syntax:
 
 ```md
 [= <expression> =]
@@ -464,7 +466,7 @@ Before using, you need to enable macro replacement in Front Matter and define `e
 
 If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to escape and replace.
 
-### Some Examples
+### Examples
 
 - whether to enable the page title serial number:  [= headingNumber =]
 - use variable:  [= customVar =]
@@ -502,7 +504,7 @@ If the expression needs to contain [\= or =\], please enter `[\=` or `=\]` to es
 
 ### Available Variables
 
-Macro code can use variables defined in Front Matter, or use the following built-in variables
+Macro expression can use variables defined in Front Matter, or use the following built-in variables
 
 variable name | type | description
 ---- | ----- | ---
