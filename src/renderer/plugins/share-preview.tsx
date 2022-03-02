@@ -1,61 +1,5 @@
 import type { Plugin } from '@fe/context'
-import { FLAG_MAS, MODE } from '@fe/support/args'
-
-if (MODE === 'share-preview') {
-  Object.defineProperty(window, 'localStorage', {
-    value: (function () {
-      const s: any = {}
-
-      Object.defineProperty(s, 'setItem', {
-        get: () => {
-          return (k: any, v: any) => {
-            s[String(k)] = String(v)
-          }
-        }
-      })
-
-      Object.defineProperty(s, 'getItem', {
-        get: () => {
-          return (k: any) => {
-            if (Object.prototype.hasOwnProperty.call(s, String(k))) {
-              return s[String(k)]
-            } else {
-              return null
-            }
-          }
-        }
-      })
-
-      Object.defineProperty(s, 'removeItem', {
-        get: () => {
-          return (k: any) => {
-            if (Object.prototype.hasOwnProperty.call(s, String(k))) {
-              delete s[String(k)]
-            }
-          }
-        }
-      })
-
-      Object.defineProperty(s, 'clear', {
-        get: () => {
-          return () => {
-            for (const k in s) {
-              delete s[String(k)]
-            }
-          }
-        }
-      })
-
-      Object.defineProperty(s, 'length', {
-        get: () => {
-          return Object.keys(s).length
-        }
-      })
-
-      return s
-    })(),
-  })
-}
+import { FLAG_MAS } from '@fe/support/args'
 
 export default {
   name: 'share-preview',
@@ -75,12 +19,12 @@ export default {
     })
 
     const link = ctx.lib.vue.ref('')
+    const ip = ctx.lib.vue.ref('')
 
     const panel = ctx.lib.vue.defineComponent({
       setup () {
         const expire = ctx.lib.vue.ref('2h')
-        const ip = ctx.lib.vue.ref('')
-        const ips = ctx.lib.vue.ref([])
+        const ips = ctx.lib.vue.ref([] as string[])
 
         ctx.lib.vue.onMounted(async () => {
           ips.value = await ctx.api.rpc(`
@@ -91,7 +35,9 @@ export default {
               .map(x => x.address)
               .filter(x => ip.isV4Format(x) && !ip.isLoopback(x))
           `)
-          ip.value = ips.value[0]
+          if (!ips.value.includes(ip.value)) {
+            ip.value = ips.value[0]
+          }
         })
 
         ctx.lib.vue.watch([expire, ip], async ([expire, ip]) => {
@@ -167,7 +113,6 @@ export default {
 
     ctx.statusBar.tapMenus(menus => {
       menus['status-bar-tool']?.list?.push(
-        { type: 'separator' },
         {
           id: 'plugin.share-preview',
           type: 'normal',
