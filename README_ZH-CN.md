@@ -4,7 +4,7 @@
 
 > App Store 版本由于沙盒的限制，没有“浏览器中打开”、“终端”功能。如需要使用这两个功能，请访问 https://github.com/purocean/yn 下载完整功能版本。
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Mac App Store 版本说明](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
 [English](./README.md) | 中文说明
 
@@ -15,7 +15,7 @@
 ## 特色
 
 - **使用方便**：使用 Monaco 内核，专为 Markdown 优化，拥有和 VSCode 一样的编辑体验。
-- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、Plantuml 图形、Drawio 图形、宏替换等。
+- **功能强大**：支持历史版本回溯；可在文档中嵌入小工具、可运行的代码块、表格、PlantUML 图形、Drawio 图形、宏替换等。
 - **兼容性强**：数据保存为本地 Markdown 文件；拓展功能尽量用 Markdown 原有的语法实现。
 - **插件拓展**：支持用户编写自己的插件来拓展编辑器的功能。
 - **支持加密**：用来保存账号等隐私文件，文件可单独设置密码。
@@ -49,8 +49,8 @@
 - **编辑表格单元格:** 双击表格单元格即可快速编辑
 - **复制标题链接:** 复制标题链接路径到剪切板，便于插入到其他文件
 - **嵌入小工具:** 文档支持内嵌 HTML 小工具
-- **嵌入 Plantuml 图形:** 需要安装 Java，graphviz
-- **嵌入 drawio 图形:** 文档支持内嵌 drawio 图形
+- **嵌入 PlantUML 图形:** 在文档内内嵌 PlantUML 图形
+- **嵌入 drawio 图形:** 在文档中内嵌 drawio 图形
 - **嵌入 ECharts 图形:** 在文档中嵌入 Echarts 图形
 - **嵌入 Mermaid 图形:** 在文档中嵌入 Mermaid 图形
 - **嵌入 Luckysheet 表格:** 在文档中嵌入 Luckysheet 表格

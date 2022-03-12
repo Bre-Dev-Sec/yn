@@ -44,7 +44,7 @@
     "entitlementsInherit": "build/entitlementsInherit.mac.plist",
     "provisioningProfile": "/Users/yang/cert/mas.provisionprofile",
     "binaries": [
-      "out/mas-universal/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.7.3"
+      "out/mas-universal/Yank Note.app/Contents/Resources/app.asar.unpacked/bin/darwin-pandoc-2.14.2"
     ],
     "target": [
       "mas"

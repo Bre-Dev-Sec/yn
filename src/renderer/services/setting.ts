@@ -107,6 +107,17 @@ const schema: Schema = {
       group: 'other',
       required: true,
     },
+    'plantuml-api': {
+      defaultValue: 'local',
+      title: 'T_setting-panel.schema.plantuml-api',
+      type: 'string',
+      enum: ['local', 'https://www.plantuml.com/plantuml/png/{data}'],
+      options: {
+        enum_titles: ['Local - Need Java and Graphviz', 'Online (plantuml.com)'],
+      },
+      required: true,
+      group: 'other',
+    },
     'doc-history.number-limit': {
       defaultValue: 500,
       title: 'T_setting-panel.schema.doc-history.number-limit',
@@ -159,6 +170,17 @@ const schema: Schema = {
       title: 'T_setting-panel.schema.editor.mouse-wheel-zoom',
       type: 'boolean',
       format: 'checkbox',
+      group: 'editor',
+      required: true,
+    },
+    'auto-save': {
+      defaultValue: 2000,
+      title: 'T_setting-panel.schema.auto-save',
+      enum: [0, 2000, 4000, 8000, 30000, 60000],
+      options: {
+        enum_titles: ['Disable', '2s', '4s', '8s', '30s', '60s'],
+      },
+      type: 'number',
       group: 'editor',
       required: true,
     },

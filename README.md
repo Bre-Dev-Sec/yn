@@ -4,7 +4,7 @@ A **hackable** markdown note application for programmers
 
 > The App Store version does not have "open in browser" and "terminal" functions due to sandbox restrictions. If you need to use these two functions, please visit https://github.com/purocean/yn to download the full functional version.
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not ecommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
 English | [中文说明](./README_ZH-CN.md)
 
@@ -15,7 +15,7 @@ English | [中文说明](./README_ZH-CN.md)
 ## Highlights
 
 - **Easy to use:** Use *Monaco* kernel, optimize for Markdown editing, and have the same editing experience as VSCode.
-- **Powerful:** Support version control; Applets, runnable code blocks, tables, Plantuml, Drawio, macro replacements, etc., can be embedded in the document.
+- **Powerful:** Support version control; Applets, runnable code blocks, tables, PlantUML, Drawio, macro replacements, etc., can be embedded in the document.
 - **High compatibility:** Data is saved as local Markdown files, and the extension functions are implemented in the original syntax of Markdown as far as possible.
 - **Plug-in extension:** Support users to write their own plug-ins to expand the functionality of the editor.
 - **Encryption supported:** Use encryption to save private files such as account number, and the password can be set separately for each file.
@@ -49,7 +49,7 @@ For more information on how to use the following functions, please see [characte
 - **Edit table cell:** double-click a table cell to quickly edit
 - **Copy title link:** copy title link path to the clipboard for easy insertion into other files
 - **Embedded Applets:** document supports embedded HTML Applets
-- **Embed Plantuml graphics:** you need to install Java and graphviz
+- **Embed PlantUML graphics:** document supports embedded plantUML graphics
 - **Embed drawio graphics:** document supports embedded drawio graphics
 - **Embed ECharts graphics:** document supports embeded Echarts graphics
 - **Embed Mermaid graphics:** document supports embeded Mermaid graphics
