@@ -14,11 +14,14 @@ import { registerShortcut } from './shortcut'
 import { $t } from './i18n'
 import { getProxyAgent } from './proxy-agent'
 import config from './config'
+import { initProxy } from './proxy'
 import { setAccessFileBookmark } from './ssb'
 import './iap'
 
 // mas 下会报证书错误
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
+
+initProxy()
 
 const electronContextMenu = require('electron-context-menu')
 const electronRemote = require('@electron/remote/main')
