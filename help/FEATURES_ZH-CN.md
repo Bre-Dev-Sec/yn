@@ -30,6 +30,7 @@ define:
     :::
 1. 插件 `<home>/yank-note/plugins`
 1. 主题 `<home>/yank-note/themes`
+1. 扩展 `<home>/yank-note/extensions`
 
 ## TOC 生成
 
@@ -64,7 +65,7 @@ define:
 
 ### 元素属性书写
 
-此功能使用 [markdown-it-attrs][markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
+此功能使用 [markdown-it-attributes](https://github.com/purocean/markdown-it-attributes) 实现
 
 - 红色文字，白色背景，居中和边框{.bgw .text-center .with-border style="color:red"}
 - 显示为**块元素**{.block}
@@ -217,6 +218,12 @@ AAAAAAAAAAAA | BBBBBBBBBBBBBB
 Test | Test
 [小尺寸表格]
 {.small}
+
+| h1 | h2 | h3 |
+| -- | -- | -- |
+| x1 | x2 | x3 {rowspan=2 style="color:red"} |
+| x4 {colspan=2} |
+[合并单元格]
 
 ## Katex 公式
 
@@ -390,7 +397,7 @@ chart.setOption({
 链接属性 `link-type` 值需要是 `luckysheet` 字符串。使用链接的形式也不会影响其他 Markdown 解析器解析。
 
 ::: warning
-现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。 
+现阶段 [Luckysheet](https://github.com/mengshukeji/Luckysheet) Bug 较多，使用需谨慎。
 :::
 
 [luckysheet](./test.luckysheet){link-type="luckysheet"}

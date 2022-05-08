@@ -30,6 +30,7 @@ Directory description
     :::
 1. plug-ins `<home>/yank-note/plugins`
 1. themes `<home>/yank-note/themes`
+1. extensions `<home>/yank-note/extensions`
 
 ## TOC Generation
 
@@ -216,6 +217,12 @@ AAAAAAAAAAAA | BBBBBBBBBBBBBB
 Test | Test
 [Small Table]
 {.small}
+
+| h1 | h2 | h3 |
+| -- | -- | -- |
+| x1 | x2 | x3 {rowspan=2 style="color:red"} |
+| x4 {colspan=2} |
+[Merge Cells]
 
 ## Katex
 

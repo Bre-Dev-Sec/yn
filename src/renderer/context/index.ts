@@ -1,6 +1,7 @@
 import * as storage from '@fe/utils/storage'
 import * as utils from '@fe/utils/index'
 import { showPremium } from '@fe/others/premium'
+import * as extension from '@fe/others/extension'
 import * as ioc from '@fe/core/ioc'
 import * as plugin from '@fe/core/plugin'
 import * as hook from '@fe/core/hook'
@@ -26,8 +27,11 @@ import * as setting from '@fe/services/setting'
 import * as i18n from '@fe/services/i18n'
 import * as controlCenter from '@fe/services/control-center'
 import * as lib from './lib'
+import * as components from './components'
 
 const ctx = {
+  lib,
+  components,
   ioc,
   base,
   api,
@@ -48,15 +52,16 @@ const ctx = {
   embed,
   setting,
   i18n,
-  lib,
   env,
   utils,
   ui: { useToast, useModal },
   registerHook: hook.registerHook,
   removeHook: hook.removeHook,
   triggerHook: hook.triggerHook,
-  registerPlugin: plugin.register,
   showPremium: showPremium,
+  showExtensionManager: extension.showManager,
+  getExtensionLoadStatus: extension.getLoadStatus,
+  getExtensionInitialized: extension.getInitialized,
   version: __APP_VERSION__,
 }
 

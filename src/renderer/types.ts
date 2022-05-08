@@ -93,6 +93,7 @@ export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
 export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
+export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type RenderEnv = {
   source: string,
@@ -100,6 +101,35 @@ export type RenderEnv = {
   renderCount: number,
   attributes?: Record<string, any>,
   tokens: Token[]
+}
+
+export type ExtensionCompatible = { value: boolean, reason: string }
+export type ExtensionLoadStatus = { version?: string, themes: boolean, plugin: boolean, style: boolean, activationTime: number }
+
+export interface Extension {
+  id: string;
+  displayName: string;
+  description: string;
+  icon: string;
+  readmeUrl: string;
+  changelogUrl: string;
+  homepage: string;
+  license: string;
+  author: {
+    name: string;
+    email?: string;
+    url?: string;
+  };
+  version: string;
+  themes: { name: string; css: string }[];
+  compatible: ExtensionCompatible;
+  main: string;
+  style: string;
+  enabled?: boolean;
+  installed: boolean;
+  origin: 'official' | 'registry' | 'unknown';
+  dist: { tarball: string, unpackedSize: number };
+  isDev?: boolean;
 }
 
 export type BuildInSettings = {
@@ -134,6 +164,7 @@ export type BuildInSettings = {
   'proxy.server': string,
   'proxy.pac-url': string,
   'proxy.bypass-list': string,
+  'extension.registry': RegistryHostname,
   'keep-running-after-closing-window': boolean,
   'plantuml-api': string,
 }
@@ -151,6 +182,7 @@ export type BuildInActions = {
   'view.exit-presentation': () => void,
   'doc.show-history': (doc?: Doc) => void
   'doc.hide-history': () => void,
+  'extension.show-manager': (id?: string) => void,
   'layout.toggle-view': (visible?: boolean) => void,
   'layout.toggle-side': (visible?: boolean) => void,
   'layout.toggle-xterm': (visible?: boolean) => void,
@@ -234,11 +266,13 @@ export type BuildInHookTypes = {
   SETTING_CHANGED: { changedKeys: (keyof BuildInSettings)[], oldSettings: BuildInSettings, settings: BuildInSettings }
   SETTING_FETCHED: { settings: BuildInSettings, oldSettings: BuildInSettings },
   SETTING_BEFORE_WRITE: { settings: BuildInSettings },
+  EXTENSION_READY: { extensions: Extension[] },
 }
 
 export type BuildInIOCTypes = { [key in keyof BuildInHookTypes]: any; } & {
   STATUS_BAR_MENU_TAPPERS: any;
   CONTROL_CENTER_SCHEMA_TAPPERS: any;
+  THEME_STYLES: any;
 }
 
 export type FrontMatterAttrs = {

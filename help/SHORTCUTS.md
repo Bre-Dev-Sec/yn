@@ -48,6 +48,7 @@ Edit Table Cell (Popup) | Ctrl/Cmd + Click
 Copy Heading link | Ctrl/Cmd + Click Heading
 Switch Editor Tab | Ctrl/Cmd + Alt/Option + Left/Right
 Close Editor Current Tab | TABS-CLOSE-CURRENT
+Switch Editor Current Tab | Ctrl + 0-9
 Toggle Sidebar | Alt/Option + E
 Toggle Word Wrap | Alt/Option + W
 Toggle Preview | Alt/Option + V
@@ -59,6 +60,7 @@ Zoom In | Ctrl/Cmd + =
 Zoom Out | Ctrl/Cmd + -
 Zoom Reset | Ctrl/Cmd + 0
 OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
+Switch Repository | Alt/Option + 0-9
 
 :::
 ::: group-item [= $ctx.i18n.getCurrentLanguage() === 'zh-CN' ? '*' : '' =]中文
@@ -99,6 +101,7 @@ OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
 复制文档标题链接 | Ctrl/Cmd + 单击标题
 切换编辑器 Tab | Ctrl/Cmd + Alt/Option + Left/Right
 关闭编辑器当前标签 Tab | TABS-CLOSE-CURRENT
+切换编辑器当前标签 | Ctrl + 0-9
 切换侧栏 | Alt/Option + E
 切换编辑器自动换行 | Alt/Option + W
 切换文档预览显示 | Alt/Option + V
@@ -110,5 +113,6 @@ OpenAI Auto Completion | Ctrl/Cmd + Alt/Option + .
 缩放缩小 | Ctrl/Cmd + -
 缩放重置 | Ctrl/Cmd + 0
 OpenAI 自动补全 | Ctrl/Cmd + Alt/Option + .
+切换仓库 | Alt/Option + 0-9
 :::
 ::::
