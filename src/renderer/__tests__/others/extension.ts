@@ -3,6 +3,9 @@ import * as extension from '@fe/others/extension'
 jest.mock('@fe/support/api', () => ({}))
 jest.mock('@fe/services/theme', () => ({}))
 jest.mock('js-untar', () => ({}))
+jest.mock('@fe/support/args', () => ({
+  FLAG_DEMO: false,
+}))
 
 jest.mock('@fe/utils', () => ({
   getLogger: console.log
@@ -43,6 +46,7 @@ test('readInfoFromJson', () => {
       reason: 'Not yank note extension.',
       value: false,
     },
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -72,6 +76,7 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: '',
     changelogUrl: '',
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -80,6 +85,7 @@ test('readInfoFromJson', () => {
     engines: {
       'yank-note': '>=3.30.0',
     },
+    requirements: { premium: true, terminal: false }
   })).toStrictEqual({
     id: 'test',
     author: { name: '' },
@@ -94,6 +100,7 @@ test('readInfoFromJson', () => {
     icon: '',
     homepage: '',
     license: '',
+    requirements: { premium: true, terminal: false },
     compatible: {
       reason: 'Need Yank Note [>=3.30.0].',
       value: false,
@@ -128,6 +135,7 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: '',
     changelogUrl: '',
+    requirements: {},
   })
 
   expect(extension.readInfoFromJson({
@@ -146,6 +154,7 @@ test('readInfoFromJson', () => {
     ],
     readmeUrl: 'readmeUrl',
     changelogUrl: 'changelogUrl',
+    origin: 'official',
   })).toStrictEqual({
     id: 'test',
     author: { name: 'hello', email: 'xxx@email.com' },
@@ -158,7 +167,7 @@ test('readInfoFromJson', () => {
       { name: 'a', css: './a.css' },
       { name: 'b', css: './b.css' },
     ],
-    origin: 'unknown',
+    origin: 'official',
     dist: { tarball: '', unpackedSize: 0 },
     icon: '',
     homepage: '',
@@ -169,5 +178,6 @@ test('readInfoFromJson', () => {
     },
     readmeUrl: 'readmeUrl',
     changelogUrl: 'changelogUrl',
+    requirements: {},
   })
 })

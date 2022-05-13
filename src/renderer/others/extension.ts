@@ -9,6 +9,7 @@ import type { Extension, ExtensionCompatible, ExtensionLoadStatus, RegistryHostn
 import * as i18n from '@fe/services/i18n'
 import * as theme from '@fe/services/theme'
 import { triggerHook } from '@fe/core/hook'
+import { FLAG_DEMO } from '@fe/support/args'
 
 const logger = getLogger('extension')
 
@@ -29,12 +30,16 @@ function changeRegistryOrigin (hostname: RegistryHostname, url: string) {
   return _url.toString()
 }
 
-export function getInstalledExtensionFilePath (id: string, filename: string) {
+export function getExtensionPath (id: string, ...paths: string[]) {
+  return path.join(id.replace(/\//g, '$'), ...paths)
+}
+
+export function getInstalledExtensionFileUrl (id: string, filename: string) {
   if (/https?:\/\//.test(filename)) {
     return filename
   }
 
-  return path.join('/extensions', id, filename)
+  return path.join('/extensions', getExtensionPath(id, filename))
 }
 
 export function getLoadStatus (id: string): ExtensionLoadStatus {
@@ -71,6 +76,7 @@ export function readInfoFromJson (json: any): Omit<Extension, 'installed'> | nul
       ? parseAuthor(json.author) || { name: '' }
       : json.author || { name: '' },
     themes: json.themes || [],
+    requirements: json.requirements || {},
     main: json.main || '',
     style: json.style || '',
     icon: json.icon || '',
@@ -89,7 +95,7 @@ export async function getInstalledExtension (id: string): Promise<Extension | nu
   let json
 
   try {
-    json = await api.fetchHttp(getInstalledExtensionFilePath(id, 'package.json'))
+    json = await api.fetchHttp(getInstalledExtensionFileUrl(id, 'package.json'))
     if (!json.name || !json.version) {
       throw new Error('Invalid extension package.json')
     }
@@ -100,7 +106,7 @@ export async function getInstalledExtension (id: string): Promise<Extension | nu
 
   const info = readInfoFromJson(json)
   if (info) {
-    return { ...info, installed: true }
+    return { ...info, installed: true, origin: FLAG_DEMO ? 'registry' : 'unknown' }
   }
 
   return null
@@ -119,9 +125,9 @@ export async function getInstalledExtensions () {
       extensions.push({
         ...info,
         enabled: item.enabled && info.compatible.value,
-        icon: getInstalledExtensionFilePath(info.id, info.icon),
-        readmeUrl: getInstalledExtensionFilePath(info.id, 'README.md'),
-        changelogUrl: getInstalledExtensionFilePath(info.id, 'CHANGELOG.md'),
+        icon: getInstalledExtensionFileUrl(info.id, info.icon),
+        readmeUrl: getInstalledExtensionFileUrl(info.id, 'README.md'),
+        changelogUrl: getInstalledExtensionFileUrl(info.id, 'CHANGELOG.md'),
         isDev: item.isDev,
       })
     }
@@ -134,11 +140,11 @@ export async function getRegistryExtensions (registry: RegistryHostname = 'regis
   logger.debug('getRegistryExtensions', registry)
 
   const registryUrl = `https://${registry}/yank-note-registry`
-  const registryJson = await api.proxyRequest(registryUrl).then(r => r.json())
+  const registryJson = await api.proxyRequest(registryUrl, { timeout: 5000 }).then(r => r.json())
   const latest = registryJson['dist-tags'].latest
   const tarballUrl = changeRegistryOrigin(registry, registryJson.versions[latest].dist.tarball)
 
-  const extensions = await api.proxyRequest(tarballUrl)
+  const extensions = await api.proxyRequest(tarballUrl, { timeout: 5000 })
     .then(r => r.arrayBuffer())
     .then(data => pako.inflate(new Uint8Array(data)))
     .then(arr => arr.buffer)
@@ -194,7 +200,7 @@ async function load (extension: Extension) {
     if (!loadStatus.plugin && main && main.endsWith('.js')) {
       pluginPromise = new Promise((resolve, reject) => {
         const script = window.document.createElement('script')
-        script.src = path.resolve('/extensions', extension.id, main)
+        script.src = getInstalledExtensionFileUrl(extension.id, main)
         script.defer = true
         script.onload = () => {
           resolve()
@@ -219,7 +225,7 @@ async function load (extension: Extension) {
     if (!loadStatus.style && style && style.endsWith('.css')) {
       const link = window.document.createElement('link')
       link.rel = 'stylesheet'
-      link.href = path.resolve('/extensions', extension.id, style)
+      link.href = getInstalledExtensionFileUrl(extension.id, style)
       window.document.head.appendChild(link)
       loadStatus.style = true
     }
@@ -228,8 +234,8 @@ async function load (extension: Extension) {
       extension.themes.forEach(style => {
         theme.registerThemeStyle({
           from: 'extension',
-          name: `[${extension.id.replace(/^yank-note-extension-/, '')}]: ${style.name}`,
-          css: `extension:${path.join(extension.id, style.css)}`,
+          name: `[${extension.id}]: ${style.name}`,
+          css: `extension:${getExtensionPath(extension.id, style.css)}`,
         })
       })
       loadStatus.themes = true

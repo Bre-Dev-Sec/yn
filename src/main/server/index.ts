@@ -53,6 +53,7 @@ const checkPermission = (ctx: any, next: any) => {
       '/api/attachment',
       '/api/plantuml',
       '/api/settings/js',
+      '/api/extensions',
     ],
     guest: [
       '/api/file',
@@ -312,7 +313,7 @@ const customCss = async (ctx: any, next: any) => {
       if (filename.startsWith('extension:')) {
         const extensions = await extension.list()
         const extensionName = filename.substring('extension:'.length, filename.indexOf('/'))
-        if (extensions.some(x => x.enabled && x.id === extensionName)) {
+        if (extensions.some(x => x.enabled && x.id === extension.dirnameToId(extensionName))) {
           ctx.redirect(`/extensions/${filename.replace('extension:', '')}`)
         } else {
           throw new Error(`extension not found [${extensionName}]`)
@@ -374,6 +375,7 @@ const setting = async (ctx: any, next: any) => {
       }
 
       getAction('proxy.reload')(data)
+      getAction('envs.reload')(data)
 
       ctx.body = result('ok', 'success')
     }

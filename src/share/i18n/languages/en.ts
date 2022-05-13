@@ -29,6 +29,8 @@ const data = {
   'outline': 'Outline',
   'files': 'Files',
   'install-extension-tips': 'Please install and enable the "%s" extension first',
+  'not-support-mas': 'Yank Note downloaded from the Mac Apple Store does not support this extension.',
+  'learn-more': 'Learn More',
   'premium': {
     'need-purchase': '[%s] Premium is required',
     'buy-license': 'Buy License',
@@ -41,8 +43,8 @@ const data = {
       'desc': 'Yank Note is open-source, I\'ve been constantly updating it since 2018. It consumes my energy and money (such as the annual Apple developer account subscription). Now a paid premium version is available. If you need advanced features or want to support my development, you can buy a license.',
       'free-desc': 'For most users',
       'premium-desc': 'More features',
-      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History',
-      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History(Advanced)\nMacro Replacement\nDark Mode',
+      'free-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History\nExtension',
+      'premium-list': 'Basic Editing\nGraphic Embedding\nRun Code Snippet\nHTML Applets\nEncryption\nTerminal Integration\nOpenAI Integration\nDocument History (Advanced)\nExtension (More)\nMacro Replacement\nDark Mode',
     },
     'buy': {
       'ipa-buy': 'Buy %s',
@@ -341,6 +343,7 @@ const data = {
       'assets-dir': 'Image Dir',
       'assets-desc': 'Relative or absolute path (in document repository). Variables: docName, docBasename, docSlug, date.',
       'shell': 'Shell',
+      'envs': 'Environments',
       'auto-save': 'Auto Save',
       'plantuml-api': 'PlantUML Endpoint',
       'updater': {
@@ -434,11 +437,6 @@ const data = {
       'delete-col': 'Delete Column',
     },
   },
-  'lucky-sheet': {
-    'saved-at': 'Saved at',
-    'edit-sheet': 'Edit Sheet',
-    'create-dialog-title': 'Create Luckysheet File',
-  },
   'markdown-link': {
     'convert-to-titled-link': 'Convert to Titled Link',
   },
@@ -513,19 +511,6 @@ const data = {
     'zoom-out': 'Zoom Out',
     'zoom-reset': 'Actual Size',
   },
-  'openai': {
-    'openai-complete': 'OpenAI Complete',
-    'api-token': 'Api Token',
-    'api-token-desc': 'You can get your api token from <a target="_blank" href="http://openai.com">openai.com</a>',
-    'engine-id': 'Engine Id',
-    'engine-id-desc': 'Please refer to <a target="_blank" href="https://beta.openai.com/docs/engines/overview/">Engine Overview</a>',
-    'mode': 'Mode',
-    'range': 'Characters Range',
-    'range-desc': 'Context characters range',
-    'max-tokens': 'Max Tokens',
-    'args-json': 'Custom Arguments',
-    'args-json-desc': 'Query parameters, JSON string like {"temperature": 0.3}',
-  },
   'extension': {
     'extension-manager': 'Extension Manager',
     'all': 'All',
@@ -558,6 +543,9 @@ const data = {
     'enable': 'Enable',
     'uninstall-confirm': 'Are you sure want to uninstall [%s]?',
     'registry': 'Registry',
+    'activation-time': 'Activation Time',
+    'requirement': 'Requirement',
+    'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
   },
 }
 

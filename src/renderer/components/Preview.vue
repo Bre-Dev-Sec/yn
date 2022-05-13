@@ -539,6 +539,7 @@ export default defineComponent({
 
     fieldset {
       border-style: solid;
+      border-width: 1px;
       border-radius: var(--g-border-radius);
       margin: 20px 0;
 
@@ -661,8 +662,12 @@ export default defineComponent({
       background: inherit;
     }
 
-    *:not(button) {
+    hr, h1, h2, td, th,
+    fieldset, blockquote {
       border-color: var(--g-color-80);
+    }
+
+    hr {
       background-color: inherit;
     }
 

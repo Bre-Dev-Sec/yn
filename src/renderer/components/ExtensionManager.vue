@@ -31,7 +31,10 @@
                     <div v-if="!item.compatible.value" class="status">{{ $t('extension.incompatible') }}</div>
                     <div v-if="!item.installed" class="status">{{ $t('extension.not-installed') }}</div>
                     <div v-if="item.installed && item.enabled" class="status">
-                      {{ item.activationTime ? `${item.activationTime.toFixed(2)}ms` : $t('extension.enabled') }}
+                      <span v-if="item.activationTime" :title="$t('extension.activation-time')">
+                        {{ `${item.activationTime.toFixed(2)}ms` }}
+                      </span>
+                      <span v-else>{{ $t('extension.enabled') }}</span>
                     </div>
                     <div v-if="item.installed && !item.enabled" class="status warning">{{ $t('extension.disabled') }}</div>
                     <div v-if="item.dirty" class="status warning">{{ $t('extension.reload-required') }}</div>
@@ -63,7 +66,7 @@
                 <div class="tags">
                   <div v-if="currentExtension.origin === 'unknown'" class="tag">
                     <span>{{ $t('extension.origin') }}</span>
-                    <span style="background-color: #ff9800">{{ $t('extension.unknown') }}</span>
+                    <span class="warning-tag">{{ $t('extension.unknown') }}</span>
                   </div>
                   <div class="tag">
                     <span>{{ $t('extension.author') }}</span>
@@ -76,7 +79,8 @@
                   </div>
                   <div v-if="currentExtension.dist.unpackedSize" class="tag">
                     <span>{{ $t('extension.unpacked-size') }}</span>
-                    <span>{{ (currentExtension.dist.unpackedSize / 1024).toFixed(2) }}KiB</span>
+                    <span v-if="currentExtension.dist.unpackedSize >= 1048576">{{ (currentExtension.dist.unpackedSize / 1048576).toFixed(2) }}MiB</span>
+                    <span v-else>{{ (currentExtension.dist.unpackedSize / 1024).toFixed(2) }}KiB</span>
                   </div>
                   <div
                     v-if="currentExtension.homepage && currentExtension.homepage.split('/')[2]"
@@ -99,9 +103,27 @@
                   >
                     <img alt="npm" :src="`https://img.shields.io/npm/dy/${currentExtension.id}?color=%234180bd&label=Download&style=flat-square`">
                   </div>
+                  <div
+                    v-if="currentExtension.requirements.premium"
+                    class="tag"
+                    style="cursor: pointer;"
+                    @click="showPremium()"
+                  >
+                    <span>{{ $t('extension.requirement') }}</span>
+                    <span class="warning-tag">{{ $t('premium.premium') }}</span>
+                  </div>
+                  <div
+                    v-if="currentExtension.requirements.terminal"
+                    class="tag"
+                    style="cursor: pointer;"
+                    @click="openUrl(URL_MAS_LIMITATION)"
+                  >
+                    <span>{{ $t('extension.requirement') }}</span>
+                    <span class="warning-tag">Terminal</span>
+                  </div>
                 </div>
                 <div class="description">{{ currentExtension.description }}</div>
-                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }}</i></div>
+                <div v-if="installing" class="actions"><i>{{ $t('extension.installing') }} <b>{{installing}}</b></i></div>
                 <div v-else-if="uninstalling" class="actions"><i>{{ $t('extension.uninstalling') }}</i></div>
                 <div v-else class="actions">
                   <template v-if="currentExtension.dirty">
@@ -181,7 +203,7 @@
 <script lang="ts" setup>
 import Markdown from 'markdown-it'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useI18n } from '@fe/services/i18n'
+import { getCurrentLanguage, useI18n } from '@fe/services/i18n'
 import { getLogger } from '@fe/utils'
 import * as api from '@fe/support/api'
 import { registerAction, removeAction } from '@fe/core/action'
@@ -192,26 +214,31 @@ import type { Extension, ExtensionCompatible } from '@fe/types'
 import * as setting from '@fe/services/setting'
 import { useModal } from '@fe/support/ui/modal'
 import { useToast } from '@fe/support/ui/toast'
+import { getPurchased, showPremium } from '@fe/others/premium'
+import { FLAG_DISABLE_XTERM, FLAG_MAS, URL_MAS_LIMITATION } from '@fe/support/args'
 
 const markdownIt = Markdown({ linkify: true, breaks: true, html: false })
 
 const logger = getLogger('extension-manager-component')
 
-const { $t } = useI18n()
+const { $t, t } = useI18n()
 
 const registries = extensionManager.registries
 
 const showManager = ref(false)
 const currentId = ref('')
 const iframeLoaded = ref(false)
-const installing = ref(false)
+const installing = ref('')
 const uninstalling = ref(false)
 const dirty = ref(false)
 const registryExtensions = ref<Extension[] | null>(null)
-const installedExtensions = ref<Extension[]>([])
+const installedExtensions = ref<Extension[] | null>(null)
 const listType = ref<'all' | 'installed'>('all')
 const contentType = ref<'readme' | 'changelog'>('readme')
-const currentRegistry = ref(setting.getSetting('extension.registry', 'registry.npmjs.org'))
+const currentRegistry = ref(setting.getSetting(
+  'extension.registry',
+  getCurrentLanguage() === 'zh-CN' ? 'registry.npmmirror.com' : 'registry.npmjs.org'
+))
 const contentMap = ref<{
   readme: Record<string, string | null>;
   changelog: Record<string, string>;
@@ -238,21 +265,23 @@ const extensions = computed(() => {
 
   if (registryExtensions.value) {
     list = registryExtensions.value.map(item => {
-      const installedInfo = installedExtensions.value.find(installed => installed.id === item.id)
+      const installedInfo = installedExtensions.value?.find(installed => installed.id === item.id)
       if (installedInfo) {
+        const upgradable = installedInfo.version !== item.version
         return {
           ...item,
           installed: true,
-          icon: installedInfo.icon,
-          readmeUrl: installedInfo.readmeUrl,
-          changelogUrl: installedInfo.changelogUrl,
+          icon: upgradable ? item.icon : installedInfo.icon,
+          readmeUrl: upgradable ? item.readmeUrl : installedInfo.readmeUrl,
+          changelogUrl: upgradable ? item.changelogUrl : installedInfo.changelogUrl,
+          requirements: upgradable ? item.requirements : installedInfo.requirements,
           enabled: installedInfo.enabled,
           version: installedInfo.version,
           compatible: installedInfo.compatible,
           isDev: installedInfo.isDev,
           newVersionCompatible: item.compatible,
           latestVersion: item.version,
-          upgradable: installedInfo.version !== item.version,
+          upgradable,
         }
       }
 
@@ -260,7 +289,7 @@ const extensions = computed(() => {
     })
   }
 
-  installedExtensions.value.forEach(item => {
+  installedExtensions.value?.forEach(item => {
     if (!registryExtensions.value?.some(registry => registry.id === item.id)) {
       list.push(item)
     }
@@ -324,6 +353,7 @@ async function refreshInstalledExtensions () {
 
 async function fetchExtensions () {
   try {
+    installedExtensions.value = null
     registryExtensions.value = null
     registryExtensions.value = await extensionManager.getRegistryExtensions(currentRegistry.value)
   } catch (error) {
@@ -370,13 +400,45 @@ async function fetchContent (type: 'readme' | 'changelog', extension: Extension)
   }
 }
 
+async function checkOrigin (extension: Extension) {
+  if (extension.origin === 'unknown') {
+    if (!(await useModal().confirm({
+      content: t('extension.unknown-origin-tips'),
+      okText: t('extension.enable'),
+    }))) {
+      throw new Error('canceled')
+    }
+  }
+}
+
+async function checkRequirements (extension: Extension) {
+  if (extension.requirements.premium && !getPurchased()) {
+    useToast().show('info', t('premium.need-purchase', extension.displayName))
+    showPremium()
+    throw new Error('Extension requires premium')
+  }
+
+  if (extension.requirements.terminal && (FLAG_DISABLE_XTERM || FLAG_MAS)) {
+    if (await useModal().confirm({
+      content: t('not-support-mas'),
+      okText: t('learn-more'),
+    })) {
+      window.open(URL_MAS_LIMITATION)
+    }
+
+    throw new Error('Extension requires xterm')
+  }
+}
+
 async function install (extension?: Extension) {
   if (!extension) {
     return
   }
 
+  await checkRequirements(extension)
+
   try {
-    installing.value = true
+    installing.value = extension.id
     await extensionManager.install(extension, currentRegistry.value)
     await refreshInstalledExtensions()
   } catch (error: any) {
@@ -384,7 +446,7 @@ async function install (extension?: Extension) {
     useToast().show('warning', error.message)
     throw error
   } finally {
-    installing.value = false
+    installing.value = ''
   }
 
   useToast().show('info', $t.value('extension.toast-loaded'))
@@ -431,6 +493,9 @@ async function enable (extension?: Extension) {
   if (!extension) {
     return
   }
+
+  await checkOrigin(extension)
+  await checkRequirements(extension)
 
   logger.debug('enable', extension.id)
   await extensionManager.enable(extension)
@@ -485,7 +550,7 @@ watch(showManager, (val) => {
     fetchExtensions()
   } else {
     setTimeout(() => {
-      installedExtensions.value = []
+      installedExtensions.value = null
       registryExtensions.value = null
       contentMap.value = { readme: {}, changelog: {} }
     }, 400)
@@ -498,7 +563,7 @@ watch(currentRegistry, (val) => {
 })
 
 watch(currentExtension, (val) => {
-  if (val) {
+  if (val && installedExtensions.value) {
     fetchContent('readme', val)
     fetchContent('changelog', val)
   }
@@ -541,6 +606,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   width: 320px;
+  max-width: 30vw;
   flex: none;
 }
 
@@ -754,6 +820,7 @@ onUnmounted(() => {
     position: relative;
     height: 100%;
     background: #fff;
+    min-height: 0;
 
     .tabs {
       position: absolute;
@@ -835,5 +902,9 @@ iframe {
 
 .warning {
   color: #f44336 !important;
+}
+
+.warning-tag {
+  background-color: #ff9800 !important;
 }
 </style>

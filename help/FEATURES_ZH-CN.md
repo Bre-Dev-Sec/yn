@@ -227,7 +227,7 @@ Test | Test
 
 ## Katex 公式
 
-此功能由 [markdown-it-katex](https://github.com/waylonflinn/markdown-it-katex) 插件提供
+此功能由 [KaTeX](https://github.com/KaTeX/KaTeX) 提供。
 
 $$\begin{array}{c}
 \nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
@@ -499,6 +499,8 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 
 注：OpenAI API token 需要你自行获取。
 
+> *<a href="javascript: ctx.showExtensionManager('@yank-note/extension-openai')">需要安装并启用 OpenAI 扩展</a>*
+
 <video src="./openai.mp4" height="200" controls></video>
 
 ## Front Matter
@@ -521,7 +523,7 @@ Yank Note 接入了 [OpenAI](https://openai.com)，可以按下 `[= $ctx.command
 
 ## 宏替换
 
-> <a href="javascript: ctx.showPremium()">高级版可用</a>
+> *<a href="javascript: ctx.showPremium()">高级版可用</a>*
 
 Yank Note 允许你在页面中嵌入宏，用以动态地替换文档。
 

@@ -27,13 +27,25 @@ export interface Repo {
 
 export namespace Components {
   export namespace Modal {
-    export type ConfirmModalParams = { title?: string; content?: string; component?: any; action?: any }
-    export type AlertModalParams = { title?: string; content?: string; component?: any; action?: any }
-
-    export type InputModalParams = {
-      type?: string;
+    interface BaseParams {
       title?: string;
       content?: string;
+      okText?: string;
+      cancelText?: string;
+    }
+
+    export interface ConfirmModalParams extends BaseParams {
+      component?: any;
+      action?: any;
+    }
+
+    export interface AlertModalParams extends BaseParams {
+      component?: any;
+      action?: any;
+    }
+
+    export interface InputModalParams extends BaseParams {
+      type?: string;
       value?: string;
       hint?: string;
       modalWidth?: string;
@@ -92,7 +104,7 @@ export namespace Components {
 export type ThemeName = 'system' | 'dark' | 'light'
 export type LanguageName = 'system' | Language
 export type ExportType = 'pdf' | 'docx' | 'html' | 'rst' | 'adoc'
-export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other' | 'openai'
+export type SettingGroup = 'repos' | 'appearance' | 'editor' | 'image' | 'proxy' | 'other'
 export type RegistryHostname = 'registry.npmjs.org' | 'registry.npmmirror.com'
 
 export type RenderEnv = {
@@ -122,6 +134,7 @@ export interface Extension {
   };
   version: string;
   themes: { name: string; css: string }[];
+  requirements: { premium?: boolean, terminal?: boolean };
   compatible: ExtensionCompatible;
   main: string;
   style: string;
@@ -132,7 +145,7 @@ export interface Extension {
   isDev?: boolean;
 }
 
-export type BuildInSettings = {
+export interface BuildInSettings {
   'repos': Repo[],
   'theme': ThemeName,
   'language': LanguageName,
@@ -140,6 +153,7 @@ export type BuildInSettings = {
   'custom-css': string,
   'assets-dir': string,
   'shell': string,
+  'envs': string,
   'editor.mouse-wheel-zoom': boolean,
   'editor.font-size': number,
   'editor.tab-size': 2 | 4,
@@ -148,12 +162,6 @@ export type BuildInSettings = {
   'editor.line-numbers': 'on' | 'off' | 'relative' | 'interval',
   'plugin.image-hosting-picgo.server-url': string,
   'plugin.image-hosting-picgo.enable-paste-image': boolean,
-  'plugin.editor-openai.api-token': string,
-  'plugin.editor-openai.engine-id': string,
-  'plugin.editor-openai.mode': 'insert' | 'completion',
-  'plugin.editor-openai.max-tokens': number,
-  'plugin.editor-openai.range': number,
-  'plugin.editor-openai.args-json': string,
   'license': string,
   'mark': FileItem[],
   'updater.source': 'github.com' | 'ghproxy.com' | 'mirror.ghproxy.com',
