@@ -230,6 +230,8 @@ const data = {
       'doc-history': 'Document History',
       'share-preview': 'Share Preview',
       'extension-manager': 'Extension Manager',
+      'print': 'Print Document',
+      'export': 'Export Document',
     },
     'document-info': {
       'selected': 'Selected',
