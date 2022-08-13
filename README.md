@@ -4,7 +4,7 @@ A **hackable** markdown note application for programmers
 
 > The App Store version does not have "open in browser" and "terminal" functions due to sandbox restrictions. If you need to use these two functions, please visit https://github.com/purocean/yn to download the full functional version.
 
-[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not ecommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
+[![Download](./help/mas_en.svg?.inline)](https://apps.apple.com/cn/app/yank-note/id1551528618) [Not recommended](https://github.com/purocean/yn/issues/65#issuecomment-1065799677)
 
 English | [中文说明](./README_ZH-CN.md)
 
