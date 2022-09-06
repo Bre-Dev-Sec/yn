@@ -252,7 +252,7 @@ $\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\p
 // --run--
 await new Promise(r => setTimeout(r, 500))
 ctx.ui.useToast().show("info", "HELLOWORLD!")
-console.log('HELLOWORD')
+console.log('HELLOWORLD')
 ```
 
 ## 小工具

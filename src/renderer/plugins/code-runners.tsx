@@ -1,4 +1,5 @@
 import type { Plugin } from '@fe/context'
+import { sleep } from '@fe/utils'
 
 class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
   private code: string;
@@ -30,7 +31,8 @@ class JavascriptExecutor implements ReadableStreamDefaultReader<string> {
       }
     }).join(' ')
 
-    const tick = (args: any[]) => {
+    const tick = async (args: any[]) => {
+      await sleep(0)
       const str = stringify(args) + '\n'
       this._readResolve(str)
     }

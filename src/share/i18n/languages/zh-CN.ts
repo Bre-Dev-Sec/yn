@@ -241,6 +241,7 @@ const data: BaseLanguage = {
       'selected': '已选择',
       'lines': '总行数',
       'chars': '字符数',
+      'selections': '选择',
     },
     'help': {
       'help': '帮助',
