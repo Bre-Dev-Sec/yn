@@ -375,6 +375,9 @@ const data = {
         'port': 'Listen Port',
         'port-desc': 'Need to restart the application.'
       },
+      'tree': {
+        'exclude': 'Exclude Files',
+      },
       'proxy': {
         'enabled': 'Enabled',
         'server': 'Proxy Server',
@@ -413,7 +416,8 @@ const data = {
     },
     'uploading': 'Uploading',
     'upload-failed': 'Upload Failed',
-    'need-api': 'Please configure PicGo Api first.'
+    'need-api': 'Please configure PicGo Api first.',
+    'upload-all-images': 'Upload All Images',
   },
   'code-run': {
     'run': 'Run',

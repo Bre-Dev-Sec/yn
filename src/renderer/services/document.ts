@@ -43,6 +43,35 @@ export function getAbsolutePath (doc: Doc) {
   return join(getRepo(doc.repo)?.path || '/', doc.path)
 }
 
+/**
+ * Create a checker to check if a document is current activated document.
+ * @returns
+ */
+export function createCurrentDocChecker () {
+  const currentFileUri = toUri(store.state.currentFile)
+
+  const check = () => {
+    return currentFileUri === toUri(store.state.currentFile)
+  }
+
+  return {
+    check,
+    changed: () => !check(),
+    throwErrorIfChanged: () => {
+      if (check()) {
+        return
+      }
+
+      throw new Error('Current file changed')
+    }
+  }
+}
+
+/**
+ * Check if the document is a markdown file.
+ * @param doc
+ * @returns
+ */
 export function isMarkdownFile (doc: Doc) {
   return !!(doc && doc.type === 'file' && misc.isMarkdownFile(doc.path))
 }
@@ -169,7 +198,7 @@ export async function createDoc (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     triggerHook('DOC_CREATED', { doc: file })
   } catch (error: any) {
     useToast().show('warning', error.message)
-    console.error(error)
+    throw error
   }
 
   return file
@@ -218,7 +247,7 @@ export async function createDir (doc: Optional<Pick<Doc, 'repo' | 'path' | 'cont
     triggerHook('DOC_CREATED', { doc: dir })
   } catch (error: any) {
     useToast().show('warning', error.message)
-    console.error(error)
+    throw error
   }
 
   return dir
@@ -273,7 +302,7 @@ export async function duplicateDoc (originDoc: Doc, newPath?: string) {
       triggerHook('DOC_CREATED', { doc: { ...originDoc, path: newPath } })
     } catch (error: any) {
       useToast().show('warning', error.message)
-      console.error(error)
+      throw error
     }
   }
 }
@@ -462,9 +491,10 @@ export async function ensureCurrentFileSaved () {
     return
   }
 
-  const fileURI = toUri(currentFile)
+  const currentDocChecker = createCurrentDocChecker()
+
   const checkFile = () => {
-    if (fileURI !== toUri(store.state.currentFile)) {
+    if (currentDocChecker.changed()) {
       throw new Error('Save Error')
     }
   }
