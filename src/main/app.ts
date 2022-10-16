@@ -33,6 +33,7 @@ const isMacos = os.platform() === 'darwin'
 const isLinux = os.platform() === 'linux'
 
 let urlMode: 'scheme' | 'dev' | 'prod' = 'scheme'
+let skipBeforeUnloadCheck = false
 
 const trayEnabled = !(yargs.argv['disable-tray'])
 const backendPort = Number(yargs.argv.port) || 3044
@@ -132,13 +133,20 @@ const createWindow = () => {
   restoreWindowBounds()
   win.on('ready-to-show', () => {
     win!.show()
+    skipBeforeUnloadCheck = false
   })
 
   win.on('close', e => {
+    e.preventDefault()
+
     saveWindowBounds()
+
+    // keep running in tray
     if (trayEnabled && config.get('keep-running-after-closing-window', !isMacos)) {
       hideWindow()
-      e.preventDefault()
+    } else {
+      // quit app
+      quit()
     }
   })
 
@@ -152,6 +160,16 @@ const createWindow = () => {
 
   win.on('leave-full-screen', () => {
     fullscreen = false
+  })
+
+  win!.webContents.on('will-navigate', (e) => {
+    e.preventDefault()
+  })
+
+  win!.webContents.on('will-prevent-unload', (e) => {
+    if (skipBeforeUnloadCheck) {
+      e.preventDefault()
+    }
   })
 }
 
@@ -187,7 +205,10 @@ const showWindow = (showInCurrentWindow = true) => {
 }
 
 const reload = () => {
-  win && win.loadURL(getUrl())
+  if (win) {
+    skipBeforeUnloadCheck = true
+    win.loadURL(getUrl())
+  }
 }
 
 const quit = () => {

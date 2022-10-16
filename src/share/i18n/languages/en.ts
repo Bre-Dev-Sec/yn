@@ -210,6 +210,7 @@ const data = {
       'side-bar': 'Show Side Bar',
       'word-wrap': 'Word Wrap',
       'typewriter-mode': 'Typewriter Mode',
+      'editor-preview-exclusive': 'Editor/Preview Exclusive',
     },
     'setting': 'Setting',
     'repo': {
