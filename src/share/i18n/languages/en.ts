@@ -569,7 +569,9 @@ const data = {
     'registry': 'Registry',
     'activation-time': 'Activation Time',
     'requirement': 'Requirement',
+    'auto-upgrade': 'Auto Upgrade',
     'unknown-origin-tips': 'Using extensions from unknown sources can be risky, still want to enable?',
+    'extensions-auto-upgraded': '%s extensions have been upgraded',
   },
 }
 
